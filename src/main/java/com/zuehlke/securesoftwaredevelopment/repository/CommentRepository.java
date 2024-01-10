@@ -23,12 +23,18 @@ public class CommentRepository {
     }
 
     public void create(Comment comment) {
-        String query = "insert into comments(giftId, userId, comment) values (" + comment.getGiftId() + ", " + comment.getUserId() + ", '" + comment.getComment() + "')";
+        //String query = "insert into comments(giftId, userId, comment) values (" + comment.getGiftId() + ", " + comment.getUserId() + ", '" + comment.getComment() + "')";
+        String query = "insert into comments(giftId, userId, comment) values (?, ?, ?)";
 
         try (Connection connection = dataSource.getConnection();
-             Statement statement = connection.createStatement();
+             //Statement statement = connection.createStatement();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
         ) {
-            statement.execute(query);
+            preparedStatement.setInt(1, comment.getGiftId());
+            preparedStatement.setInt(2, comment.getUserId());
+            preparedStatement.setString(3, comment.getComment());
+            preparedStatement.executeUpdate();
+            //statement.execute(query);
         } catch (SQLException e) {
             e.printStackTrace();
         }
