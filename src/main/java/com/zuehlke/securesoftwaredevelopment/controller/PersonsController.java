@@ -8,11 +8,13 @@ import com.zuehlke.securesoftwaredevelopment.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -32,8 +34,11 @@ public class PersonsController {
     }
 
     @GetMapping("/persons/{id}")
-    public String person(@PathVariable int id, Model model) {
+    public String person(@PathVariable int id, Model model, HttpSession session) {
         model.addAttribute("person", personRepository.get("" + id));
+        String csrfToken = session.getAttribute("CSRF_TOKEN").toString();
+        System.out.println(csrfToken);
+        model.addAttribute("csrf_token", csrfToken);
         return "person";
     }
 
@@ -53,7 +58,10 @@ public class PersonsController {
     }
 
     @PostMapping("/update-person")
-    public String updatePerson(Person person) {
+    public String updatePerson(Person person, @RequestParam("csrf_token") String csrfToken, HttpSession session) throws AccessDeniedException {
+        if(!session.getAttribute("CSRF_TOKEN").toString().equals(csrfToken)){
+            throw new AccessDeniedException("Forbidden");
+        }
         personRepository.update(person);
         return "redirect:/persons/" + person.getId();
     }
