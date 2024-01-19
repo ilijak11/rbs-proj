@@ -43,7 +43,9 @@
           <label>My rating:</label>
           <b><label th:text="${userRating}"></label></b>
       </div>
-      <div class="form-group">
+      <div class="form-group"
+        sec:authorize="hasAuthority('RATE_GIFT')"
+      >
           <input type="radio" id="1" name="rating" value="1">
           <label for="1">1</label>
           <input type="radio" id="2" name="rating" value="2">
@@ -54,22 +56,29 @@
           <label for="4">4</label>
           <input type="radio" id="5" name="rating" value="5">
           <label for="5">5</label>
-          <button id="rateGift" class="btn btn-primary mt-2">Rate</button>
+          <button id="rateGift" class="btn btn-primary mt-2"
+              th:disabled="${not #authorization.expression('hasAuthority(''BUY_GIFT'')')}"
+          >Rate</button>
       </div>
       </form>
   </div>
   <div class="mt-2 mb-2">
-      <a th:href="@{'/buy-gift/' + ${gift.id}}">Buy gift</a>
+      <a
+          th:href="@{'/buy-gift/' + ${gift.id}}"
+          sec:authorize="hasAuthority('BUY_GIFT')"
+      >Buy gift</a>
   </div>
   <h2 id="gift-comments">Gift comments</h2>
   <div class="form-group" th:each="comment,iter : ${comments}">
     <b th:text="${comment.personName}"></b>
     <div class="form-control" th:id="${iter.index}" th:text="${comment.comment}" disabled></div>
   </div>
-  <div class="form-group">
+  <div class="form-group" sec:authorize="hasAuthority('ADD_COMMENT')">
     <label for="addComment">Add comment</label>
     <textarea class="form-control" id="addComment" rows="3" placeholder="Comment..."></textarea>
-    <button id="createComment" class="btn btn-primary mt-2">Create comment</button>
+    <button id="createComment" class="btn btn-primary mt-2"
+            th:disabled="${not #authorization.expression('hasAuthority(''ADD_COMMENT'')')}"
+    >Create comment</button>
   </div>
 
   <script th:inline="javascript">

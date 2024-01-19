@@ -48,15 +48,24 @@
         <a class="navbar-brand" th:href="@{/gifts}">Christmas Gift Shop</a>
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" th:href="@{/gifts}">Gifts</a>
+                <a class="nav-link"
+                   th:href="@{/gifts}"
+                   sec:authorize="hasAuthority('VIEW_GIFT_LIST')"
+                >Gifts</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" th:href="@{/persons}">Users</a>
+                <a class="nav-link"
+                   th:href="@{/persons}"
+                   sec:authorize="hasAuthority('VIEW_PERSONS_LIST')"
+                >Users</a>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" th:href="@{/myprofile}">My Profile</a>
+                <a class="nav-link"
+                   th:href="@{/myprofile}"
+                   sec:authorize="hasAuthority('VIEW_MY_PROFILE')"
+                >My Profile</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/register-totp}">Register second factor</a>
