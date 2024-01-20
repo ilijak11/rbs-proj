@@ -1,10 +1,14 @@
 package com.zuehlke.securesoftwaredevelopment.controller;
 
 import com.zuehlke.securesoftwaredevelopment.config.AuditLogger;
+import com.zuehlke.securesoftwaredevelopment.config.SecurityUtil;
 import com.zuehlke.securesoftwaredevelopment.domain.Person;
+import com.zuehlke.securesoftwaredevelopment.domain.Role;
 import com.zuehlke.securesoftwaredevelopment.domain.User;
 import com.zuehlke.securesoftwaredevelopment.repository.PersonRepository;
+import com.zuehlke.securesoftwaredevelopment.repository.RoleRepository;
 import com.zuehlke.securesoftwaredevelopment.repository.UserRepository;
+import com.zuehlke.securesoftwaredevelopment.service.PermissionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 
@@ -29,10 +34,12 @@ public class PersonsController {
 
     private final PersonRepository personRepository;
     private final UserRepository userRepository;
+    private final PermissionService permissionService;
 
-    public PersonsController(PersonRepository personRepository, UserRepository userRepository) {
+    public PersonsController(PersonRepository personRepository, UserRepository userRepository, PermissionService permissionService) {
         this.personRepository = personRepository;
         this.userRepository = userRepository;
+        this.permissionService = permissionService;
     }
 
     @GetMapping("/persons/{id}")
@@ -57,6 +64,13 @@ public class PersonsController {
     // ovu permisiju nemaju kupac i menadzer
     @PreAuthorize("hasAuthority('UPDATE_PERSON')")
     public ResponseEntity<Void> person(@PathVariable int id) {
+
+        User user = SecurityUtil.getCurrentUser();
+        List<String> userRoles = permissionService.getRoles(user.getId()).stream().map(Role::getName).collect(Collectors.toList());
+        if(userRoles.contains("BUYER") || userRoles.contains("MANAGER")){
+            if(user.getId() != id) throw new AccessDeniedException("Forbidden");
+        }
+
         personRepository.delete(id);
         userRepository.delete(id);
 
@@ -66,6 +80,13 @@ public class PersonsController {
     @PostMapping("/update-person")
     @PreAuthorize("hasAuthority('UPDATE_PERSON')")
     public String updatePerson(Person person, @RequestParam("csrf_token") String csrfToken, HttpSession session) throws AccessDeniedException {
+
+        User user = SecurityUtil.getCurrentUser();
+        List<String> userRoles = permissionService.getRoles(user.getId()).stream().map(Role::getName).collect(Collectors.toList());
+        if(userRoles.contains("BUYER") || userRoles.contains("MANAGER")){
+            if(user.getId() != Integer.parseInt(person.getId())) throw new AccessDeniedException("Forbidden");
+        }
+
         if(!session.getAttribute("CSRF_TOKEN").toString().equals(csrfToken)){
             throw new AccessDeniedException("Forbidden");
         }

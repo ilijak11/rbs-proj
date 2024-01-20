@@ -33,4 +33,8 @@ public class PermissionService {
         }
         return userPermissions;
     }
+
+    public List<Role> getRoles(int userId){
+        return roleRepository.findByUserId(userId);
+    }
 }
