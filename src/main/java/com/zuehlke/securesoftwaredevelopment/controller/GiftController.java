@@ -54,7 +54,8 @@ public class GiftController {
 
     @GetMapping(value = "/api/gifts/search", produces = "application/json")
     @ResponseBody
-    public List<Gift> search(@RequestParam("query") String query) throws SQLException {
+    public List<Gift> search(@RequestParam("query") String query) {
+        LOG.info("Search term: " + query);
         return giftRepository.search(query);
     }
 
@@ -123,6 +124,7 @@ public class GiftController {
     }
 
     @PostMapping("/buy-gift/{id}")
+    @PreAuthorize("hasAuthority('BUY_GIFT')")
     public String buyCar(@PathVariable("id") int id, @RequestParam(name = "count", required = true) int count, Address address, Model model) {
         if (address.getAddress().length() < 10) {
             return String.format("redirect:/buy-gift/%s?addressError=true", id);
@@ -131,6 +133,8 @@ public class GiftController {
         if (count <= 0) {
             return String.format("redirect:/buy-gift/%s", id);
         }
+
+        auditLogger.audit("Bought " + count + " instances of gift: " + id);
 
         return String.format("redirect:/buy-gift/%s?bought=true", id);
     }

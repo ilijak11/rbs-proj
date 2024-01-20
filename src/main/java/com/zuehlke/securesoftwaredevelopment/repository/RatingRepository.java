@@ -1,5 +1,6 @@
 package com.zuehlke.securesoftwaredevelopment.repository;
 
+import com.zuehlke.securesoftwaredevelopment.config.AuditLogger;
 import com.zuehlke.securesoftwaredevelopment.domain.Comment;
 import com.zuehlke.securesoftwaredevelopment.domain.Rating;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import java.util.List;
 public class RatingRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(RatingRepository.class);
+    private static final AuditLogger auditLogger = AuditLogger.getAuditLogger(RatingRepository.class);
 
 
     private DataSource dataSource;
@@ -45,7 +47,9 @@ public class RatingRepository {
                 preparedStatement.setInt(3, rating.getRating());
                 preparedStatement.executeUpdate();
             }
+            auditLogger.audit("Rated: " + rating.getRating() + " for gift: " + rating.getGiftId());
         } catch (SQLException e) {
+            LOG.warn("Exception while rating gift: " + rating.getGiftId() + " ", e);
             e.printStackTrace();
         }
     }
@@ -60,6 +64,7 @@ public class RatingRepository {
                 ratingList.add(new Rating(rs.getInt(1), rs.getInt(2), rs.getInt(3)));
             }
         } catch (SQLException e) {
+            LOG.warn("Exception while fetching all ratings: ", e);
             e.printStackTrace();
         }
         return ratingList;

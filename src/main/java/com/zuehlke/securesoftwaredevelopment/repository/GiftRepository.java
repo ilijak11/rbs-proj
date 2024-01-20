@@ -37,12 +37,13 @@ public class GiftRepository {
                 giftList.add(gift);
             }
         } catch (SQLException e) {
+            LOG.warn("Exception while fetching all gifts: ", e);
             e.printStackTrace();
         }
         return giftList;
     }
 
-    public List<Gift> search(String searchTerm) throws SQLException {
+    public List<Gift> search(String searchTerm) {
         List<Gift> giftList = new ArrayList<>();
         String query = "SELECT DISTINCT g.id, g.name, g.description, g.price FROM gift g, gift_to_tag gt, tags t" +
                 " WHERE g.id = gt.giftId" +
@@ -55,6 +56,10 @@ public class GiftRepository {
             while (rs.next()) {
                 giftList.add(createGiftFromResultSet(rs));
             }
+            auditLogger.audit("Searched for gift: " + searchTerm);
+        } catch (SQLException e){
+            LOG.warn("Exception while searching for: " + searchTerm + " ", e);
+            e.printStackTrace();
         }
         return giftList;
     }
@@ -74,8 +79,9 @@ public class GiftRepository {
                         try {
                             return g.getId() == rs2.getInt(2);
                         } catch (SQLException e) {
-                            throw new RuntimeException(e);
+                            LOG.warn("Exception while filtering tags: ", e);
                         }
+                        return false;
                     }).findFirst().get();
                     giftTags.add(tag);
                 }
@@ -83,6 +89,7 @@ public class GiftRepository {
                 return gift;
             }
         } catch (SQLException e) {
+            LOG.warn("Exception while fetching gift: " + giftId + " ", e);
             e.printStackTrace();
         }
 
@@ -111,11 +118,14 @@ public class GiftRepository {
                         statement2.setInt(2, tag.getId());
                         statement2.executeUpdate();
                     } catch (SQLException e) {
+                        LOG.warn("Exception while adding tag to gift: ", e);
                         e.printStackTrace();
                     }
                 });
             }
+            auditLogger.audit("Created gift: " + gift);
         } catch (SQLException e) {
+            LOG.warn("Exception while creating gift: ", e);
             e.printStackTrace();
         }
         return id;
@@ -134,6 +144,7 @@ public class GiftRepository {
             statement.executeUpdate(query3);
             statement.executeUpdate(query4);
         } catch (SQLException e) {
+            LOG.warn("Exception while deleting gift: " + giftId + " ", e);
             e.printStackTrace();
         }
     }

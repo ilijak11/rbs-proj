@@ -1,5 +1,6 @@
 package com.zuehlke.securesoftwaredevelopment.controller;
 
+import com.zuehlke.securesoftwaredevelopment.config.AuditLogger;
 import com.zuehlke.securesoftwaredevelopment.domain.Comment;
 import com.zuehlke.securesoftwaredevelopment.domain.User;
 import com.zuehlke.securesoftwaredevelopment.repository.CommentRepository;
@@ -28,7 +29,6 @@ public class CommentController {
         User user = (User) authentication.getPrincipal();
         comment.setUserId(user.getId());
         commentRepository.create(comment);
-
-        return ResponseEntity.noContent().build();
+         return ResponseEntity.noContent().build();
     }
 }

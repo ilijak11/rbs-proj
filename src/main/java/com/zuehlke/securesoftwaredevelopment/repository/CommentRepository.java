@@ -1,5 +1,7 @@
 package com.zuehlke.securesoftwaredevelopment.repository;
 
+import com.zuehlke.securesoftwaredevelopment.config.AuditLogger;
+import com.zuehlke.securesoftwaredevelopment.controller.CommentController;
 import com.zuehlke.securesoftwaredevelopment.domain.Comment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,7 @@ import java.util.List;
 public class CommentRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(CommentRepository.class);
+    private static final AuditLogger auditLogger = AuditLogger.getAuditLogger(CommentRepository.class);
 
 
     private DataSource dataSource;
@@ -34,8 +37,10 @@ public class CommentRepository {
             preparedStatement.setInt(2, comment.getUserId());
             preparedStatement.setString(3, comment.getComment());
             preparedStatement.executeUpdate();
+            auditLogger.audit("Commented: " + comment.getComment() + " on gift: " + comment.getGiftId());
             //statement.execute(query);
         } catch (SQLException e) {
+            LOG.warn("Exception while creating comment: ", e);
             e.printStackTrace();
         }
     }
@@ -50,6 +55,7 @@ public class CommentRepository {
                 commentList.add(new Comment(rs.getInt(1), rs.getInt(2), rs.getString(3)));
             }
         } catch (SQLException e) {
+            LOG.warn("Exception while fetching all comments: ", e);
             e.printStackTrace();
         }
         return commentList;

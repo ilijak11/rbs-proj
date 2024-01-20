@@ -103,7 +103,8 @@ public class PersonsController {
 
     @GetMapping(value = "/persons/search", produces = "application/json")
     @ResponseBody
-    public List<Person> searchPersons(@RequestParam String searchTerm) throws SQLException {
+    public List<Person> searchPersons(@RequestParam String searchTerm) {
+        LOG.info("Search term: " + searchTerm);
         return personRepository.search(searchTerm);
     }
 }
