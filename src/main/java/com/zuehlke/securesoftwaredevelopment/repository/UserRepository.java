@@ -37,7 +37,6 @@ public class UserRepository {
             }
         } catch (SQLException e) {
             LOG.warn("Exception while fetching user: " + username + " ", e);
-            e.printStackTrace();
         }
         return null;
     }
@@ -50,7 +49,6 @@ public class UserRepository {
             return rs.next();
         } catch (SQLException e) {
             LOG.warn("Exception while fetching user: " + username + " ", e);
-            e.printStackTrace();
         }
         return false;
     }
@@ -64,7 +62,6 @@ public class UserRepository {
             auditLogger.audit("Deleted user: " + userId);
         } catch (SQLException e) {
             LOG.warn("Exception while deleting user: " + userId + " ", e);
-            e.printStackTrace();
         }
     }
 }

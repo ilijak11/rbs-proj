@@ -36,7 +36,6 @@ public class HashedUserRepository {
             }
         } catch (SQLException e) {
             LOG.warn("Exception while fetching user: " + username + " ", e);
-            e.printStackTrace();
         }
         return null;
     }
@@ -52,7 +51,6 @@ public class HashedUserRepository {
             auditLogger.audit("Registered topt key");
         } catch (SQLException e) {
             LOG.warn("Exception while saving totp key for user: " + username + " ", e);
-            e.printStackTrace();
         }
     }
 }

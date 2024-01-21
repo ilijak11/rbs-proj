@@ -50,7 +50,6 @@ public class RatingRepository {
             auditLogger.audit("Rated: " + rating.getRating() + " for gift: " + rating.getGiftId());
         } catch (SQLException e) {
             LOG.warn("Exception while rating gift: " + rating.getGiftId() + " ", e);
-            e.printStackTrace();
         }
     }
 
@@ -65,7 +64,6 @@ public class RatingRepository {
             }
         } catch (SQLException e) {
             LOG.warn("Exception while fetching all ratings: ", e);
-            e.printStackTrace();
         }
         return ratingList;
     }

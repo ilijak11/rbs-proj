@@ -35,7 +35,6 @@ public class PersonRepository {
             }
         } catch (SQLException e) {
             LOG.warn("Exception while fetching all persons: ", e);
-            e.printStackTrace();
         }
         return personList;
     }
@@ -52,7 +51,6 @@ public class PersonRepository {
             }
         }catch (SQLException e){
             LOG.warn("Exception while searching for: " + searchTerm + " ", e);
-            e.printStackTrace();
         }
         return personList;
     }
@@ -67,7 +65,6 @@ public class PersonRepository {
             }
         } catch (SQLException e) {
             LOG.warn("Exception while fetching person: " + personId + " ", e);
-            e.printStackTrace();
         }
 
         return null;
@@ -82,7 +79,6 @@ public class PersonRepository {
             auditLogger.audit("Deleted person: " + personId);
         } catch (SQLException e) {
             LOG.warn("Exception while deleting person: " + personId + " ", e);
-            e.printStackTrace();
         }
     }
 
@@ -114,7 +110,6 @@ public class PersonRepository {
             ));
         } catch (SQLException e) {
             LOG.warn("Exception while updating person: " + personUpdate.getId() + " ", e);
-            e.printStackTrace();
         }
     }
 }

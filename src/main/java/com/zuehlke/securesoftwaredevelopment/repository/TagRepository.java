@@ -33,7 +33,6 @@ public class TagRepository {
             }
         } catch (SQLException e) {
             LOG.info("Exception while fetching all tags", e);
-            e.printStackTrace();
         }
         return tagList;
     }

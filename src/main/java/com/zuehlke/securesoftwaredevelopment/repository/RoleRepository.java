@@ -37,7 +37,6 @@ public class RoleRepository {
             }
         } catch (SQLException e) {
             LOG.warn("Exception while fetching roles for user: " + userId + " ", e);
-            e.printStackTrace();
         }
         return roles;
     }

@@ -38,7 +38,6 @@ public class GiftRepository {
             }
         } catch (SQLException e) {
             LOG.warn("Exception while fetching all gifts: ", e);
-            e.printStackTrace();
         }
         return giftList;
     }
@@ -59,7 +58,6 @@ public class GiftRepository {
             auditLogger.audit("Searched for gift: " + searchTerm);
         } catch (SQLException e){
             LOG.warn("Exception while searching for: " + searchTerm + " ", e);
-            e.printStackTrace();
         }
         return giftList;
     }
@@ -90,7 +88,6 @@ public class GiftRepository {
             }
         } catch (SQLException e) {
             LOG.warn("Exception while fetching gift: " + giftId + " ", e);
-            e.printStackTrace();
         }
 
         return null;
@@ -119,14 +116,12 @@ public class GiftRepository {
                         statement2.executeUpdate();
                     } catch (SQLException e) {
                         LOG.warn("Exception while adding tag to gift: ", e);
-                        e.printStackTrace();
                     }
                 });
             }
             auditLogger.audit("Created gift: " + gift);
         } catch (SQLException e) {
             LOG.warn("Exception while creating gift: ", e);
-            e.printStackTrace();
         }
         return id;
     }
@@ -145,7 +140,6 @@ public class GiftRepository {
             statement.executeUpdate(query4);
         } catch (SQLException e) {
             LOG.warn("Exception while deleting gift: " + giftId + " ", e);
-            e.printStackTrace();
         }
     }
 

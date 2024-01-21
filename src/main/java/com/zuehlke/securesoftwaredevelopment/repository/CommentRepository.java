@@ -41,7 +41,6 @@ public class CommentRepository {
             //statement.execute(query);
         } catch (SQLException e) {
             LOG.warn("Exception while creating comment: ", e);
-            e.printStackTrace();
         }
     }
 
@@ -56,7 +55,6 @@ public class CommentRepository {
             }
         } catch (SQLException e) {
             LOG.warn("Exception while fetching all comments: ", e);
-            e.printStackTrace();
         }
         return commentList;
     }

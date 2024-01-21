@@ -37,7 +37,6 @@ public class PermissionRepository {
             }
         } catch (SQLException e) {
             LOG.warn("Exception while fetching permissions for role: " + roleId + " " ,e);
-            e.printStackTrace();
         }
         return permissions;
     }
